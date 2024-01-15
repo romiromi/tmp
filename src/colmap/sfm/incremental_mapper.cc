@@ -38,6 +38,7 @@
 
 #include <array>
 #include <fstream>
+#include <iostream>
 
 namespace colmap {
 namespace {
@@ -678,6 +679,7 @@ IncrementalMapper::AdjustLocalBundle(
 bool IncrementalMapper::AdjustGlobalBundle(
     const Options& options, const BundleAdjustmentOptions& ba_options) {
   CHECK_NOTNULL(reconstruction_);
+  std::cout << "options.fix_existing_images: " << options.fix_existing_images << "\n";
 
   const std::vector<image_t>& reg_image_ids = reconstruction_->RegImageIds();
 
@@ -718,7 +720,9 @@ bool IncrementalMapper::AdjustGlobalBundle(
 
   // Normalize scene for numerical stability and
   // to avoid large scale changes in viewer.
-  reconstruction_->Normalize();
+  if (!options.fix_existing_images) {
+    reconstruction_->Normalize();
+  }
 
   return true;
 }
