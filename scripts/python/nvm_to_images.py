@@ -47,6 +47,11 @@ def parse_args():
     args = parser.parse_args()
     return args
 
+class Img:
+    def __init__(self, quaternion, translation, name):
+        self.quaternion = quaternion
+        self.translation = translation
+        self.name = name
 
 def main():
     args = parse_args()
@@ -56,6 +61,13 @@ def main():
         line = fid.readline()
         num_images = int(fid.readline())
 
+        img_list = []
+        for i in range(num_images):
+            elems = fid.readline().split()
+            img_list.append(Img(np.array(list(map(float, elems[2:6]))),
+            np.array(list(map(float, elems[6:9]))),
+            elems[0].replace('/', '_')))
+        '''
         quaternion = np.zeros((num_images, 4), dtype=np.float32)
         translation = np.zeros((num_images, 3), dtype=np.float32)
         name = []
@@ -65,6 +77,9 @@ def main():
             quaternion[i] = np.array(list(map(float, elems[2:6])))
             translation[i] = np.array(list(map(float, elems[6:9])))
             name.append(elems[0].replace('/', '_'))
+        '''
+    
+    sorted_img_list = sorted(img_list, key=lambda x: x.name)
 
     with open(args.ply_path, "w") as fid:
         fid.write("# Image list with two lines of data per image:\n")
@@ -74,7 +89,13 @@ def main():
         for i in range(num_images):
             if i % 1000 == 0:
                 print("Writing point", i, "/", num_images)
-            fid.write(f"{i+1} {quaternion[i, 0]} {quaternion[i, 1]} {quaternion[i, 2]} {quaternion[i, 3]} {translation[i, 0]} {translation[i, 1]} {translation[i, 2]} 1 {name[i]}\n\n")
+            img = sorted_img_list[i]
+            if i > 501:
+                fid.write(f"{i+3} {img.quaternion[0]} {img.quaternion[1]} {img.quaternion[2]} {img.quaternion[3]} {img.translation[0]} {img.translation[1]} {img.translation[2]} 1 {img.name}\n\n")
+            else:
+                fid.write(f"{i+1} {img.quaternion[0]} {img.quaternion[1]} {img.quaternion[2]} {img.quaternion[3]} {img.translation[0]} {img.translation[1]} {img.translation[2]} 1 {img.name}\n\n")
+
+            # fid.write(f"{i+1} {quaternion[i, 0]} {quaternion[i, 1]} {quaternion[i, 2]} {quaternion[i, 3]} {translation[i, 0]} {translation[i, 1]} {translation[i, 2]} 1 {name[i]}\n\n")
             # IMAGE_ID, QW, QX, QY, QZ, TX, TY, TZ, CAMERA_ID, NAME
             # 1 0.695104 0.718385 -0.024566 0.012285 -0.046895 0.005253 -0.199664 1 image0001.png
             # # Make sure every other line is left empty

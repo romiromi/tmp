@@ -39,6 +39,7 @@
 #include "colmap/util/ply.h"
 
 #include <fstream>
+#include <iostream>
 
 namespace colmap {
 
@@ -1503,6 +1504,9 @@ void Reconstruction::ReadCamerasText(const std::string& path) {
 }
 
 void Reconstruction::ReadImagesText(const std::string& path) {
+  LOG(WARNING) << StringPrintf("ReadImagesText LOG. 1")
+                << std::endl;
+  std::cout << "ReadImagesText cout. 1" << std::endl;
   images_.clear();
 
   std::ifstream file(path);
@@ -1523,6 +1527,9 @@ void Reconstruction::ReadImagesText(const std::string& path) {
     // ID
     std::getline(line_stream1, item, ' ');
     const image_t image_id = std::stoul(item);
+    LOG(WARNING) << StringPrintf("ReadImagesText LOG. ID")
+                  << std::endl;
+    std::cout << "ReadImagesText cout. ID" << std::endl;
 
     class Image image;
     image.SetImageId(image_id);
@@ -1558,21 +1565,33 @@ void Reconstruction::ReadImagesText(const std::string& path) {
     // CAMERA_ID
     std::getline(line_stream1, item, ' ');
     image.SetCameraId(std::stoul(item));
+    LOG(WARNING) << StringPrintf("ReadImagesText LOG. CAMERA_ID")
+                  << std::endl;
+    std::cout << "ReadImagesText cout. CAMERA_ID" << std::endl;
 
     // NAME
     std::getline(line_stream1, item, ' ');
     image.SetName(item);
+    LOG(WARNING) << StringPrintf("ReadImagesText LOG. NAME")
+                  << std::endl;
+    std::cout << "ReadImagesText cout. NAME" << std::endl;
 
     // POINTS2D
     if (!std::getline(file, line)) {
       break;
     }
+    LOG(WARNING) << StringPrintf("ReadImagesText LOG. POINTS2D")
+                  << std::endl;
+    std::cout << "ReadImagesText cout. POINTS2D" << std::endl;
 
     StringTrim(&line);
     std::stringstream line_stream2(line);
 
     std::vector<Eigen::Vector2d> points2D;
     std::vector<point3D_t> point3D_ids;
+    LOG(WARNING) << StringPrintf("ReadImagesText LOG. 2")
+                  << std::endl;
+    std::cout << "ReadImagesText cout. 2" << std::endl;
 
     if (!line.empty()) {
       while (!line_stream2.eof()) {
@@ -1598,6 +1617,9 @@ void Reconstruction::ReadImagesText(const std::string& path) {
     image.SetUp(Camera(image.CameraId()));
     image.SetPoints2D(points2D);
 
+    LOG(WARNING) << StringPrintf("ReadImagesText LOG. 3")
+                  << std::endl;
+    std::cout << "ReadImagesText cout. 3" << std::endl;
     for (point2D_t point2D_idx = 0; point2D_idx < image.NumPoints2D();
          ++point2D_idx) {
       if (point3D_ids[point2D_idx] != kInvalidPoint3DId) {
