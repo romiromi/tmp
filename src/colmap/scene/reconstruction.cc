@@ -1614,8 +1614,17 @@ void Reconstruction::ReadImagesText(const std::string& path) {
       }
     }
 
+    LOG(WARNING) << StringPrintf("ReadImagesText LOG. 2.1")
+                  << std::endl;
+    std::cout << "ReadImagesText cout. 2.1 image.CameraId(): " << image.CameraId() << std::endl;
     image.SetUp(Camera(image.CameraId()));
+    LOG(WARNING) << StringPrintf("ReadImagesText LOG. 2.2")
+                  << std::endl;
+    std::cout << "ReadImagesText cout. 2.2 points2D: " << points2D << std::endl;
     image.SetPoints2D(points2D);
+    LOG(WARNING) << StringPrintf("ReadImagesText LOG. 2.3")
+                  << std::endl;
+    std::cout << "ReadImagesText cout. 2.3" << std::endl;
 
     LOG(WARNING) << StringPrintf("ReadImagesText LOG. 3")
                   << std::endl;
